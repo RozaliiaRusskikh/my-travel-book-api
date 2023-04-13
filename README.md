@@ -1,4 +1,4 @@
-# My Travel Book Api
+# My Travel Book API
 
 Was created for My Travel Book app https://my-travel-memory-book.netlify.app/
 
