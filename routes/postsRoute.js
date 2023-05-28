@@ -1,11 +1,11 @@
 const router = require("express").Router();
 const postsController = require("../controllers/postsController");
 const multer = require("multer");
-// const aws = require("aws-sdk");
-// const multerS3 = require("multer-s3");
+const aws = require("aws-sdk");
+const multerS3 = require("multer-s3");
 
-// require("dotenv").config();
-// let { SECRET_ACCESS_KEY, ACCESS_KEY_ID } = process.env;
+require("dotenv").config();
+let { SECRET_ACCESS_KEY, ACCESS_KEY_ID } = process.env;
 
 // aws.config.update({
 //   secretAccessKey: SECRET_ACCESS_KEY,
@@ -26,16 +26,17 @@ const multer = require("multer");
 //   }),
 // });
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/images/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
+//** Static files storage **
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "public/images/");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
 
-const upload = multer({ storage: storage });
+// const upload = multer({ storage: storage });
 
 router
   .route("/")
