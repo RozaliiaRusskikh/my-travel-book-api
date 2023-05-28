@@ -1,17 +1,43 @@
 const router = require("express").Router();
 const postsController = require("../controllers/postsController");
 const multer = require("multer");
+const aws = require("aws-sdk");
+const bodyParser = require("body-parser");
+const multerS3 = require("multer-s3");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/images/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
+let { SECRET_ACCESS_KEY, ACCESS_KEY_ID } = process.env;
+
+aws.config.update({
+  secretAccessKey: SECRET_ACCESS_KEY,
+  accessKeyId: ACCESS_KEY_ID,
+  region: "us-west-1",
 });
 
-const upload = multer({ storage: storage });
+const s3 = new aws.S3();
+app.use(bodyParser.json());
+
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    acl: "public-read",
+    bucket: "my-travel-memory-book",
+    key: function (req, file, cb) {
+      cb(null, file.originalname);
+    },
+  }),
+});
+
+//** Static files storage **
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "public/images/");
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, file.originalname);
+//   },
+// });
+
+// const upload = multer({ storage: storage });
 
 router
   .route("/")
