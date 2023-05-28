@@ -1,11 +1,12 @@
 //add dependencies
 const express = require("express");
 const app = express();
-
 const cors = require("cors");
 
 require("dotenv").config();
+
 let { CLIENT_URL, PORT } = process.env;
+
 PORT = PORT || 5050;
 
 const postsRoutes = require("./routes/postsRoute");
