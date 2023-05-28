@@ -2,7 +2,6 @@ const router = require("express").Router();
 const postsController = require("../controllers/postsController");
 const multer = require("multer");
 const aws = require("aws-sdk");
-const bodyParser = require("body-parser");
 const multerS3 = require("multer-s3");
 
 let { SECRET_ACCESS_KEY, ACCESS_KEY_ID } = process.env;
@@ -14,7 +13,6 @@ aws.config.update({
 });
 
 const s3 = new aws.S3();
-app.use(bodyParser.json());
 
 const upload = multer({
   storage: multerS3({
