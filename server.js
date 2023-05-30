@@ -4,10 +4,18 @@ const express = require("express");
 const app = express();
 
 require("dotenv").config();
-let { PORT } = process.env;
+
+let { PORT, CLIENT_URL } = process.env;
 PORT = PORT || 5050;
 
-app.use(cors());
+const corsOptions = {
+  origin: CLIENT_URL,
+  // Allow Heroku proxy
+  optionsSuccessStatus: 200,
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 const postsRoutes = require("./routes/postsRoute");
 
