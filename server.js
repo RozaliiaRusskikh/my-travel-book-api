@@ -10,7 +10,7 @@ PORT = PORT || 5050;
 const postsRoutes = require("./routes/postsRoute");
 
 //middleware
-app.use(cors({ origin: "*" }));
+app.use(cors());
 app.use(express.json());
 app.use(express.static("./public/images"));
 
