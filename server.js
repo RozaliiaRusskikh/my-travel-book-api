@@ -1,8 +1,7 @@
 //add dependencies
+const cors = require("cors");
 const express = require("express");
 const app = express();
-
-const cors = require("cors");
 
 require("dotenv").config();
 let { PORT, CLIENT_URL } = process.env;
@@ -12,7 +11,7 @@ const postsRoutes = require("./routes/postsRoute");
 
 //middleware
 app.use(
-  cors({ origin: [CLIENT_URL], methods: ["GET", "POST", "PUT", "DELETE"] })
+  cors({ origin: CLIENT_URL, methods: ["GET", "POST", "PUT", "DELETE"] })
 );
 app.use(express.json());
 app.use(express.static("./public/images"));
