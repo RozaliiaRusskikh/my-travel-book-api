@@ -71,7 +71,6 @@ exports.addPost = (req, res) => {
     !req.body.description ||
     !req.body.year ||
     !req.body.country ||
-    !req.body.image_path ||
     !req.body.long ||
     !req.body.lat ||
     !req.body.title
@@ -81,10 +80,8 @@ exports.addPost = (req, res) => {
     });
   }
 
-  const { name, description, year, country, image_path, long, lat, title } =
-    req.body;
+  const { name, description, year, country, long, lat, title } = req.body;
 
-  // Check for unique name
   knex("posts")
     .where({ name: name })
     .then((posts) => {
@@ -100,7 +97,7 @@ exports.addPost = (req, res) => {
           description,
           year,
           country,
-          image_path,
+          image_path: req.file.location,
           long,
           lat,
           title,
@@ -124,13 +121,13 @@ exports.addPost = (req, res) => {
 //5. Create a new attraction using POST
 exports.addAttraction = (req, res) => {
   // Validate the request body for required data
-  if (!req.body.name || !req.body.description || !req.body.image_path) {
+  if (!req.body.name || !req.body.description) {
     return res.status(400).json({
       message: "All fields are required. Missing one or more required fields",
     });
   }
 
-  const { name, description, image_path } = req.body;
+  const { name, description } = req.body;
 
   // Check for unique name
   knex("attractions")
@@ -146,7 +143,7 @@ exports.addAttraction = (req, res) => {
         .insert({
           name,
           description,
-          image_path,
+          image_path: req.file.location,
           post_id: req.params.id,
         })
         .then((createdIds) => {
@@ -172,7 +169,6 @@ exports.updatePost = (req, res) => {
     !req.body.description ||
     !req.body.year ||
     !req.body.country ||
-    !req.body.image_path ||
     !req.body.long ||
     !req.body.lat ||
     !req.body.title
@@ -182,15 +178,14 @@ exports.updatePost = (req, res) => {
     });
   }
 
-  const { name, description, year, country, image_path, long, lat, title } =
-    req.body;
+  const { name, description, year, country, long, lat, title } = req.body;
   knex("posts")
     .update({
       name,
       description,
       year,
       country,
-      image_path,
+      image_path: req.file.location,
       long,
       lat,
       title,
@@ -212,18 +207,18 @@ exports.updatePost = (req, res) => {
 //7. Update an existing attraction using PUT
 exports.updateAttraction = (req, res) => {
   // Validate the request body for required data
-  if (!req.body.name || !req.body.description || !req.body.image_path) {
+  if (!req.body.name || !req.body.description) {
     return res.status(400).json({
       message: "All fields are required. Missing one or more required fields",
     });
   }
 
-  const { name, description, image_path } = req.body;
+  const { name, description } = req.body;
   knex("attractions")
     .update({
       name,
       description,
-      image_path,
+      image_path: req.file.location,
       post_id: req.params.postId,
     })
     .where({ id: req.params.attractionId })

@@ -1,38 +1,50 @@
 const router = require("express").Router();
 const postsController = require("../controllers/postsController");
 const multer = require("multer");
+const multerS3 = require("multer-s3");
+const AWS = require("aws-sdk");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/images/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
+let { ACCESS_KEY_ID, SECRET_ACCESS_KEY, BUCKET_NAME } = process.env;
+
+const s3 = new AWS.S3({
+  accessKeyId: ACCESS_KEY_ID,
+  secretAccessKey: SECRET_ACCESS_KEY,
 });
 
-const upload = multer({ storage: storage });
+const uploadS3 = multer({
+  storage: multerS3({
+    s3: s3,
+    acl: "public-read",
+    bucket: BUCKET_NAME,
+    metadata: (req, file, cb) => {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: (req, file, cb) => {
+      cb(null, Date.now().toString() + "-" + file.originalname);
+    },
+  }),
+});
 
 router
   .route("/")
   .get(postsController.index)
-  .post(upload.single("image"), postsController.addPost);
+  .post(uploadS3.single("image"), postsController.addPost);
 
 router
   .route("/:id")
   .get(postsController.singlePost)
-  .put(upload.single("image"), postsController.updatePost)
+  .put(uploadS3.single("image"), postsController.updatePost)
   .delete(postsController.deletePost);
 
 router
   .route("/:id/attractions")
   .get(postsController.postAttractions)
-  .post(upload.single("image"), postsController.addAttraction);
+  .post(uploadS3.single("image"), postsController.addAttraction);
 
 router
   .route("/:postId/attractions/:attractionId")
   .get(postsController.singleAttraction)
-  .put(upload.single("image"), postsController.updateAttraction)
+  .put(uploadS3.single("image"), postsController.updateAttraction)
   .delete(postsController.deleteAttraction);
 
 module.exports = router;
