@@ -11,7 +11,9 @@ PORT = PORT || 5050;
 const postsRoutes = require("./routes/postsRoute");
 
 //middleware
-app.use(cors());
+app.use(
+  cors({ origin: [CLIENT_URL], methods: ["GET", "POST", "PUT", "DELETE"] })
+);
 app.use(express.json());
 app.use(express.static("./public/images"));
 
